@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "cloud-streaming-pipeline"
+		},
+		{
+			"path": "cloud-streaming-pipeline-cdk"
+		}
+	],
+	"settings": {}
+}

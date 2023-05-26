@@ -1,0 +1,5 @@
+pyspark==3.4.0
+#pytest
+#pytest-watch
+#findspark
+#aws-cdk-lib
