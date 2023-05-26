@@ -6,8 +6,7 @@ An example python pyspark Structured Streaming app with unit tests.
 - Must have spark 2.4.5 installed ( https://spark.apache.org/downloads.html )
 - Must have python 3.7 installed (instructions below using virtualenv and virtualenvwrapper)
 
-Kinesis: Kit
-Dynamo: Nick
+
 
 
 ## Installing Python and virtualenv
