@@ -43,6 +43,28 @@ At this point you can now synthesize the CloudFormation template for this code.
 $ cdk synth
 ```
 
+## Initial Setup
+
+
+Make sure you have the correct versions of everything installed in the cloud-streaming-pipeline directory readme. 
+
+
+To setup up the cloud formation s3 bucket and other required preliminary dependencies, run: 
+```
+cdk bootstrap --profile your_profile
+```
+
+
+To deploy the application, run: 
+```
+cdk deploy --profile your_profile
+```
+
+If you need to remove anything you deployed, you can run: 
+```
+cdk destroy --profile your_profile
+```
+
 To add additional dependencies, for example other CDK libraries, just add
 them to your `setup.py` file and rerun the `pip install -r requirements.txt`
 command.
