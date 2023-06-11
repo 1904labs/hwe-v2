@@ -70,39 +70,3 @@ if __name__ == "__main__":
         .start()
 
     query.awaitTermination()
-
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json
-from pyspark.sql.types import StructType, StringType, TimestampType
-
-# Create a SparkSession
-spark = SparkSession.builder.appName("KinesisReader").getOrCreate()
-
-# Define the schema for the incoming Kinesis data
-schema = StructType().add("timestamp", TimestampType()).add("data", StringType())
-
-# Configure the Kinesis stream details
-stream_name = "your_stream_name"
-region_name = "your_aws_region"
-
-# Read from Kinesis stream
-df = spark.readStream \
-    .format("kinesis") \
-    .option("streamName", stream_name) \
-    .option("regionName", region_name) \
-    .option("awsAccessKeyId", "your_access_key_id") \
-    .option("awsSecretKey", "your_secret_access_key") \
-    .option("startingPosition", "latest") \
-    .load()
-
-# Parse the data from the Kinesis stream
-parsed_df = df.select(from_json(df.data.cast("string"), schema).alias("data")).select("data.*")
-
-# Start the streaming query to write to the console
-query = parsed_df.writeStream \
-    .outputMode("append") \
-    .format("console") \
-    .start()
-
-# Wait for the query to terminate
-query.awaitTermination()
