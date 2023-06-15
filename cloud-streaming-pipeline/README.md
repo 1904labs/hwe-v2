@@ -21,9 +21,9 @@ pip install virtualenv
 # create a directory for our virtual envs
 mkdir ~/.env
 # create the virtual env
-virtualenv ~/.envs/hwe
+virtualenv ~/.env/hwe
 # activate the virtualenv (will need to do this every time you open a new shell)
-source ~/.envs/hwe/bin/activate
+source ~/.env/hwe/bin/activate
 ```
 
 ## Installing on Windows
@@ -176,4 +176,30 @@ v20.2.0
 
 ```
 npm install -g aws-cdk
+```
+
+
+# Jupyter notebook
+
+https://medium.com/sicara/get-started-pyspark-jupyter-guide-tutorial-ae2fe84f594f
+
+Download and extract spark
+
+Add to .zshrc
+
+```
+export SPARK_HOME=/Users/Kit/Code/spark/spark-3.4.0-bin-hadoop3
+export PATH="/opt/homebrew/opt/node@18/bin:$SPARK_HOME\bin:$PATH"
+export PYSPARK_DRIVER_PYTHON=jupyter
+export PYSPARK_DRIVER_PYTHON_OPTS='notebook'
+```
+
+Install jupyter and run
+```
+pip install jupyter
+```
+
+Should now start jupyter with pyspark
+```
+pyspark
 ```
