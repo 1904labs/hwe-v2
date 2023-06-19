@@ -1,0 +1,10 @@
+customer_id	username	name	sex	email	birthdate
+10000001	allenpriscilla	Margaret Johnson	F	dmeadows@yahoo.com	1991-08-01
+10000017	kerri75	Aaron Johnson	M	ykrueger@yahoo.com	1942-01-07
+10000018	stewartlisa	Madison Mathis	F	maureen76@gmail.com	2003-03-21
+10000023	crystal71	Lynn Chavez	F	philip67@gmail.com	1990-01-05
+10000044	nicholascherry	Andrew Berger	M	kevinnorman@hotmail.com	1979-05-14
+10000055	susan36	Daniel Johnson	M	zlittle@hotmail.com	1910-05-21
+10000081	janet02	Rachel Wilkins	F	jordanana@hotmail.com	1939-07-20
+10000113	laratristan	Tammy Williams	F	david11@gmail.com	1925-04-16
+10000121	millerwendy	Kelly Nelson	F	victoriamartinez@hotmail.com	1918-12-10
