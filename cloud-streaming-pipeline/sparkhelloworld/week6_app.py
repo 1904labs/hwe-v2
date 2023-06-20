@@ -73,7 +73,7 @@ def main():
 
     spark = SparkSession \
         .builder \
-        .appName("Week 2 App") \
+        .appName("Week 6 App") \
         .getOrCreate()
 
     spark.sparkContext.setLogLevel('WARN')
