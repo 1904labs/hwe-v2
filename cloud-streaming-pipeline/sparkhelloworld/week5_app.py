@@ -16,16 +16,16 @@ Person = namedtuple("Person", ["name", "birthdate", "customer_id"])
 
 #Fake input data, this will come from Kafka in reality
 def build_fake_input_data(num_records, num_partitions, spark):
-    keys = get_random_customer_ids(num_records)
+    #Have to make sure the element is a 1-item tuple. The trailing comma
+    #that looks unnecessary/dangling in the expression:
+    #   (key,)
+    #is crucial to ensuring it creates a tuple instead of a string. Do not remove it!
+    keys = [(key,) for key in get_random_customer_ids(num_records)]
     # Define the schema for the DataFrame
-    # Note: I only want this to have 1 field: customer_id. But I get an error?
-    # If I add a 2nd bogus field everything works fine?
     schema = StructType([
-        StructField("customer_id", StringType(), nullable=False),
-        StructField("bogus", StringType(), nullable=False)
+        StructField("customer_id", StringType(), nullable=False)
     ])
-    keys_with_bogus_data = [(key, "bogus") for key in keys]
-    return spark.createDataFrame(data=keys_with_bogus_data, schema=schema).repartition(num_partitions)
+    return spark.createDataFrame(data=keys, schema=schema).repartition(num_partitions)
 
 #Get random customer IDs from DynamoDB customers table
 def get_random_customer_ids(num):
