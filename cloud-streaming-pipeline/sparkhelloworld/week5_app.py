@@ -78,10 +78,10 @@ def main():
     spark.sparkContext.setLogLevel('WARN')
 
     #This will be coming from Kafka in reality...
-    fake_input_data = build_fake_input_data(num_records=500,  spark=spark, num_partitions=10)
+    input_data = build_fake_input_data(num_records=500,  spark=spark, num_partitions=10)
     
     #Enrich from DynamoDB using mapPartitions
-    people = fake_input_data.rdd.mapPartitions(lambda partition: query_dynamo_for_a_partition(partition)).toDF(["name", "birthdate", "customer_id"])
+    people = input_data.rdd.mapPartitions(lambda partition: query_dynamo_for_a_partition(partition)).toDF(["name", "birthdate", "customer_id"])
     print(people.collect())
 
 
