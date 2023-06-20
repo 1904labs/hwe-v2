@@ -47,6 +47,20 @@ def dynamo_response_to_dataframe(spark, dynamo_result):
     data = [dynamo_item_to_tuple(item) for item in dynamo_result['Responses']['customers']]
     return spark.createDataFrame(data, ['customer_id', 'username', 'name', 'email', 'birthdate'])
 
+def foreach_batch_func(reviews_df, batch_id):
+    print(f">>>>>>>>>>>>>>> processing {batch_id}")
+    # first, get all of the customer IDs from each review
+    customer_ids = get_customer_ids(reviews_df)
+    # second, using those IDs, retrieve each customer record from dynamo
+    dynamo_result = get_customers_from_dynamo(customer_ids)
+    # finally, create a new "customers" dataframe using that data
+    spark = reviews_df._session
+    customers_df = dynamo_response_to_dataframe(spark, dynamo_result)
+    joined_df = reviews_df.join(customers_df, 'customer_id')
+    result = joined_df.select('customer_id', 'review_id', 'product_title', 'username', 'name')
+    result.foreach(print)
+
+
 def main():
     config = load_dotenv(".env")
     if not config:
@@ -83,19 +97,9 @@ def main():
     # note: from_csv returns a struct, thus we have some sillyness to get all the columns
     schema = 'marketplace STRING, customer_id STRING, review_id STRING, product_id STRING, product_parent STRING, product_title STRING, product_category STRING, star_rating STRING, helpful_votes STRING, total_votes STRING, vine STRING, verified_purchase STRING, review_headline STRING, review_body STRING, review_date STRING'
     reviews_df = df.select(from_csv('value', schema, { 'delimiter': '\t' }).alias('csv')).select('csv.*')
-   
-    # first, get all of the customer IDs from each review
-    customer_ids = get_customer_ids(reviews_df)
-    # second, using those IDs, retrieve each customer record from dynamo
-    dynamo_result = get_customers_from_dynamo(customer_ids)
-    # finally, create a new "customers" dataframe using that data
-    customers_df = dynamo_response_to_dataframe(dynamo_result)
-    joined_df = reviews_df.join(customers_df, 'customer_id')
-    result = joined_df.select('customer_id', 'review_id', 'product_title', 'username', 'name').show()
 
-    stream = result.writeStream \
-        .format("console") \
-        .outputMode("append") \
+    stream = reviews_df.writeStream \
+        .foreachBatch(foreach_batch_func) \
         .start()
 
     stream.awaitTermination()
