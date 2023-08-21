@@ -7,7 +7,8 @@ from aws_cdk import (
     # aws_sqs as sqs,
     aws_s3 as s3,
     aws_glue as glue,
-    aws_athena as athena
+    aws_athena as athena,
+    aws_s3_deployment as s3deploy
 )
 
 from constructs import Construct
@@ -16,7 +17,7 @@ class CloudStreamingPipelineCdkStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-        
+        '''
         # Create a new DynamoDB table
         # If this table already exists, deploy will fail.
         self.dynamo_table = ddb.Table(
@@ -28,14 +29,19 @@ class CloudStreamingPipelineCdkStack(Stack):
             ),
             billing_mode=ddb.BillingMode.PAY_PER_REQUEST
         )
+        '''
+        # Create an s3 bucket for the new semester
+        # Create subfolders within that bucket for each handle
+        with open('semester_config.txt') as semester_file:
+            semester = semester_file.read().splitlines()[0]
+            semester_bucket = s3.Bucket(self, semester + '1', bucket_name=semester, removal_policy=cdk.RemovalPolicy.DESTROY)
         
-        # s3 bucket for each handle in handles file
-        with open('handles.txt') as file:
-            handles = file.read().splitlines()
+        with open('handles.txt') as handles_file:
+            handles = handles_file.read().splitlines()
             for handle in handles:
-                s3.Bucket(self, handle, bucket_name='hwe-' + handle, removal_policy=cdk.RemovalPolicy.DESTROY)
+                handle_folder = s3deploy.BucketDeployment(self, handle +'1', sources=[s3deploy.Source.data(handle + '/placeholder.txt', '')], destination_bucket=semester_bucket)
 
-
+        
         # Create an S3 bucket for Athena query results
         # If this bucket already exists, deploy will fail.
         s3.Bucket(self, 'hwe-athena-query-results', bucket_name='hwe-athena-query-results', removal_policy=cdk.RemovalPolicy.DESTROY)
@@ -51,7 +57,8 @@ class CloudStreamingPipelineCdkStack(Stack):
                 )
             )
         )
-
+        
+        
         # Create a Glue Data Catalog for Athena
         database = glue.CfnDatabase(
             self,
@@ -60,6 +67,4 @@ class CloudStreamingPipelineCdkStack(Stack):
                 name="hwe"
             ),
         )
-
-
-
+        
