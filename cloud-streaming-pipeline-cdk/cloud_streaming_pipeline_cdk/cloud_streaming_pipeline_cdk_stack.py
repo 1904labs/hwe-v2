@@ -38,14 +38,16 @@ class CloudStreamingPipelineCdkStack(Stack):
         
         with open('handles.txt') as handles_file:
             handles = handles_file.read().splitlines()
+            hweBucketDeployment = s3deploy.BucketDeployment(self, 'handles', sources=[], destination_bucket=semester_bucket)
             for handle in handles:
-                handle_folder = s3deploy.BucketDeployment(self, handle +'1', sources=[s3deploy.Source.data(handle + '/placeholder.txt', '')], destination_bucket=semester_bucket)
+                hweBucketDeployment.add_source(s3deploy.Source.data(handle + '/placeholder.txt', ''))
 
         
         # Create an S3 bucket for Athena query results
         # If this bucket already exists, deploy will fail.
-        s3.Bucket(self, 'hwe-athena-query-results', bucket_name='hwe-athena-query-results', removal_policy=cdk.RemovalPolicy.DESTROY)
+        # s3.Bucket(self, 'hwe-athena-query-results', bucket_name='hwe-athena-query-results', removal_policy=cdk.RemovalPolicy.DESTROY)
 
+        '''
         # Create an Athena WorkGroup
         workgroup = athena.CfnWorkGroup(
             self,
@@ -67,4 +69,4 @@ class CloudStreamingPipelineCdkStack(Stack):
                 name="hwe"
             ),
         )
-        
+        '''

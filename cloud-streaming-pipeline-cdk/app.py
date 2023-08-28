@@ -6,7 +6,7 @@ import aws_cdk as cdk
 from cloud_streaming_pipeline_cdk.cloud_streaming_pipeline_cdk_stack import CloudStreamingPipelineCdkStack
 app = cdk.App()
 
-CloudStreamingPipelineCdkStack(app, "CloudStreamingPipelineCdkStack",
+CloudStreamingPipelineCdkStack(app, "CloudStreamingPipelineCdkStackTest",
     # If you don't specify 'env', this stack will be environment-agnostic.
     # Account/Region-dependent features and context lookups will not work,
     # but a single synthesized template can be deployed anywhere.
